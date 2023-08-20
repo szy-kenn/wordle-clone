@@ -249,5 +249,30 @@ export default class Wordle {
         else if (type === 2) {
             console.log("you lose");
         }
+
+        // game over screen
+        const closeBtn = document.querySelector(".game-over-close-btn");
+        const gameOverScreen = document.getElementById("gameOverScreen");
+
+        gameOverScreen.style.display = 'flex';
+        gameOverScreen.classList.add('screen-flip');
+
+        closeBtn.addEventListener("click", () => {
+            gameOverScreen.style.display = 'none';
+        })
+
+        // guess values
+        const guessValues = document.querySelectorAll(".guess-value");
+
+        for (let i = 0; i < guessValues.length; i++) {
+            if (i === this.#currentRowVal) {
+                guessValues[i].style.width = '100%';
+                guessValues[i].style.backgroundColor = 'var(--box-correct)';
+                const p = guessValues[i].firstElementChild;
+                p.textContent = '1';
+            } else {
+                guessValues[i].style.width = 'fit-content';
+            }
+        }
     }
 }

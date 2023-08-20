@@ -1,3 +1,5 @@
+@import url('https://meyerweb.com/eric/tools/css/reset/reset.css');
+
 :root {
     --background-color-dark: #121213;
     --background-color-light: #FFFFFF;
@@ -66,16 +68,14 @@ background-color: var(--box-correct);
 .title {
     text-align: center;
     font-family: 'Oswald';
+    font-size: 2.5em;
+    padding: 0.5rem 0;
 }
 
 
 .key-container {
   bottom: 0;
-  /* left: 50%;
-  transform: translateY(50%); */
-  padding: 20px 20px;
-  /* width: 100vw; */
-  margin-top: 15px;
+  /* padding: 20px 20px; */
   display: grid;
   align-items: center;
   color: white;
@@ -138,6 +138,7 @@ background-color: var(--box-correct);
     display: grid;
     align-items: center;
     justify-content: center;
+    padding: 1rem;
 }
 
 .main-container > div > div {
@@ -183,6 +184,142 @@ background-color: var(--box-correct);
   animation: flip 0.5s ease;
 }
 
+.screen-flip {
+    animation: half-flip 0.5s ease;
+}
+
+#gameOverScreen {
+    display: none;
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    height: 90%;
+    width: 30%;
+    right: 35%;
+    top: 5%;
+    background-color: #121213;
+    font-family: 'Libre Franklin';
+}
+
+.screen-section-container {
+    position: relative;
+    display: flex;
+    padding: 3rem;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+    gap: 1.5rem;
+}
+
+.screen-section {
+    position: relative;
+    gap: 1rem;
+}
+
+.statistics {
+    display: flex;
+    flex-direction: column;
+}
+
+.header > p {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+.stats {
+    display: flex;
+    gap: 1rem;
+}
+
+.stat-subsection {
+    /* border: 1px solid red; */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.stat-value {
+    font-size: 2.6em;
+}
+
+.stat-text {
+    font-size: 0.6em;
+    letter-spacing: 1.15px;
+    line-height: 125%;
+    text-align: center;
+}
+
+.game-over-close-btn {
+    position: absolute;
+    right: 0;
+    font-size: 1.25em;
+    cursor: pointer;
+    z-index: 999;
+    margin: 1rem;
+}
+
+.guess-distribution {
+    display: flex;
+    flex-direction: column;
+}
+
+.guess-number-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.guess-number {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 29fr;
+    grid-template-rows: 1fr;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    height: 100%;
+}
+
+.guess-text {
+    font-size: 0.75em;
+}
+
+.guess-value {
+    position: relative;
+    width: 100%;
+    background-color: var(--box-border-color);
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+}
+
+.guess-value > p {
+    font-size: 0.7em;
+}
+
+.share-btn {
+    position: relative;
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.75rem 2.5rem;
+    border-radius: 25px;
+    font-size: 1em;
+    background-color: var(--box-correct);
+    cursor: pointer;
+}
+
+.note {
+    font-size: 0.6em;
+    text-align: center;
+}
+
 @keyframes pop {
   25% {
     transform: scale(1);
@@ -205,6 +342,15 @@ background-color: var(--box-correct);
   100% {
     transform: scaleY(1);
   }
+}
+
+@keyframes half-flip {
+    0% {
+        transform: scaleY(0);
+    }
+    100% {
+        transform: scaleY(1);
+    }
 }
 
 @keyframes shake {
