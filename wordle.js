@@ -5,6 +5,7 @@ export default class Wordle {
     #currentRowVal = 0;
     #isFetching = false;
     #isAnimating = false;
+    #isOver = false;
     #grid = {}
 
     get #currentRow() {
@@ -73,6 +74,7 @@ export default class Wordle {
         */
         this.#isAnimating = true;
         let tempWord = this.wordToGuess.split("");
+        let correctLetters = 0;
 
         for (let i = 0; i < this.length; i++) {
             
@@ -84,6 +86,7 @@ export default class Wordle {
                     result = 'correct';
                     square.classList.remove('pop-animation')
                     tempWord[i] = null;
+                    correctLetters++;
                 }  else if (tempWord.includes(square.textContent)) {
                     square.classList.remove('pop-animation')
                     result = 'misplaced';
@@ -92,21 +95,34 @@ export default class Wordle {
                     square.classList.remove('pop-animation')
                     result = 'wrong';
                 }        
-                if (i == this.length - 1) {
-                    this.#isAnimating = false;
-                }
+
                 square.classList.add(`letter-box-${result}`)
                 this.updateKeyPad(square.textContent, result);
+
             }, ((i + 1) * 500) / 2);
 
             square.classList.add('animated');
             square.style.animationDelay = `${(i * 500) / 2}ms`;
         }
-        
-        if (this.#currentRowVal < this.tries - 1) {
-            this.#currentColVal = 0;
-            this.#currentRowVal++;
-        }
+
+        setTimeout(() => {
+            this.#isAnimating = false;
+            //  check if the word is correct after animation
+            if (correctLetters === this.length) {
+                this.#isOver = true;
+                this.showGameOver(1);
+            }
+
+            // update row col values
+            if (this.#currentRowVal < this.tries - 1) {
+                this.#currentColVal = 0;
+                this.#currentRowVal++;
+            } else {
+                this.#isOver = true;
+                this.showGameOver(2);
+            }
+
+        }, (this.length * 500) / 2 + 500);
     }
 
     static isLetter(string) {
@@ -149,33 +165,37 @@ export default class Wordle {
 
     respond(event) {
         // event responder
-        if(Wordle.isLetter(event.key) && this.#word.length < 5) {
-            this.#currentSquare.textContent = event.key.toUpperCase();
-            console.log(this.#currentSquare.classList)
-            this.#currentSquare.classList.add('pop-animation')
-            if (this.#currentColVal < this.length - 1) {
-                this.#currentColVal++;
+        if (!this.#isOver) {
+            // if the game is not over yet (no tries left or won)
+            if(Wordle.isLetter(event.key) && this.#word.length < 5) {
+                this.#currentSquare.textContent = event.key.toUpperCase();
+                console.log(this.#currentSquare.classList)
+                this.#currentSquare.classList.add('pop-animation')
+                if (this.#currentColVal < this.length - 1) {
+                    this.#currentColVal++;
+                }
+            } else if(event.key === 'Backspace' && this.#word.length > 0) {
+                if (this.#word.length < 5) {
+                    this.#currentColVal--;
+                }
+                this.#currentSquare.classList.remove('pop-animation')
+                this.#currentSquare.textContent = '';
+    
+            } else if(event.key === 'Enter' && this.#word.length == this.length) {
+                        this.#checkWord()
+                            .then(data => {
+                                this.#compareWord();
+                            })
+                            .catch(error =>  {
+                                this.#currentRow.classList.add('shake-animation');
+                                setTimeout(() => {
+                                    this.#currentRow.classList.remove('shake-animation');
+                                }, 300);
+                                console.error(error);
+                            })
             }
-        } else if(event.key === 'Backspace' && this.#word.length > 0) {
-            if (this.#word.length < 5) {
-                this.#currentColVal--;
-            }
-            this.#currentSquare.classList.remove('pop-animation')
-            this.#currentSquare.textContent = '';
-
-        } else if(event.key === 'Enter' && this.#word.length == this.length) {
-                    this.#checkWord()
-                        .then(data => {
-                            this.#compareWord();
-                        })
-                        .catch(error =>  {
-                            this.#currentRow.classList.add('shake-animation');
-                            setTimeout(() => {
-                                this.#currentRow.classList.remove('shake-animation');
-                            }, 300);
-                            console.error(error);
-                        })
         }
+
     }
 
     createKeyPad() {
@@ -218,5 +238,16 @@ export default class Wordle {
     updateKeyPad(letter, state) {
         let key = document.querySelector(`.${letter}`)
         key.classList.add(`letter-box-${state}`)
+    }
+
+    showGameOver(type) {
+        // type 1 = won; type 2 = lose
+        if (type === 1) {
+            console.log("you won");
+        }
+
+        else if (type === 2) {
+            console.log("you lose");
+        }
     }
 }
